@@ -1,0 +1,27 @@
+# Fly.io configuration for the frontend (Astro)
+app = 'python-quiz-frontend'
+primary_region = 'iad'
+
+[build]
+  dockerfile = 'Dockerfile.frontend'
+
+[env]
+  # PUBLIC_BACKEND_API and PUBLIC_BACKEND_WS will be set during build
+
+[http_service]
+  internal_port = 4321
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1

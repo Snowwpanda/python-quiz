@@ -1,0 +1,29 @@
+# Frontend Dockerfile for Fly.io deployment
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy frontend files
+COPY frontend/package*.json ./
+COPY frontend/ ./
+
+# Install dependencies
+RUN npm install
+
+# Build arguments for environment variables
+ARG PUBLIC_BACKEND_API
+ARG PUBLIC_BACKEND_WS
+
+# Set environment variables for build
+ENV PUBLIC_BACKEND_API=${PUBLIC_BACKEND_API}
+ENV PUBLIC_BACKEND_WS=${PUBLIC_BACKEND_WS}
+
+# Build the application
+RUN npm run build
+
+# Expose port
+EXPOSE 4321
+
+# Start the application
+CMD ["node", "./dist/server/entry.mjs"]
