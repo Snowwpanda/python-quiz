@@ -36,7 +36,7 @@ COPY backend/*.py ./backend/
 
 # Install backend dependencies
 WORKDIR /app/backend
-RUN uv sync --frozen
+RUN uv sync
 
 # Copy built frontend from builder stage
 WORKDIR /app
