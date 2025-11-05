@@ -1,18 +1,21 @@
-# Fly.io configuration for the backend (FastAPI)
-app = 'python-quiz-backend'
+# Fly.io configuration for full-stack deployment
+app = 'python-quiz'
 primary_region = 'iad'
 
 [build]
-  dockerfile = 'Dockerfile.backend'
+  [build.args]
+    PUBLIC_BACKEND_API = "http://localhost:8080"
+    PUBLIC_BACKEND_WS = "ws://localhost:8080"
 
 [env]
   HOST = "0.0.0.0"
-  PORT = "8080"
+  PORT = "4321"
+  BACKEND_PORT = "8080"
   DEBUG = "False"
-  # CORS_ORIGINS will be set via fly secrets
 
+# Frontend service on port 4321
 [http_service]
-  internal_port = 8080
+  internal_port = 4321
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
@@ -21,10 +24,18 @@ primary_region = 'iad'
 
   [http_service.concurrency]
     type = "connections"
-    hard_limit = 25
-    soft_limit = 20
+    hard_limit = 50
+    soft_limit = 40
+
+# Additional service for backend API on port 8080
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+  
+  [[services.ports]]
+    port = 8080
 
 [[vm]]
-  memory = '256mb'
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
